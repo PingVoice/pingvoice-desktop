@@ -13,7 +13,7 @@ pub struct AppConfig {
 }
 
 fn default_url() -> String {
-    "http://localhost".to_string()
+    "https://pingvoice.io".to_string()
 }
 
 fn default_true() -> bool {
@@ -34,7 +34,7 @@ impl AppConfig {
     pub fn config_path() -> PathBuf {
         let app_data = dirs::config_dir()
             .unwrap_or_else(|| PathBuf::from("."))
-            .join("com.notification-to-speech.app");
+            .join("io.pingvoice.app");
 
         fs::create_dir_all(&app_data).ok();
         app_data.join("config.json")

@@ -1,6 +1,8 @@
-# Ping Voice Desktop
+# PingVoice Desktop
 
-A lightweight Tauri desktop wrapper that loads a configurable web URL with system tray support.
+The official desktop app for [PingVoice](https://pingvoice.io) — turn API calls into instant spoken notifications.
+
+PingVoice lets your systems speak. Send a POST request to the API, and hear it announced in real-time. Built for developers who want audio alerts for CI/CD pipelines, AI agents, server monitoring, and long-running jobs.
 
 ## Features
 
@@ -14,13 +16,13 @@ A lightweight Tauri desktop wrapper that loads a configurable web URL with syste
 
 Create a `config.json` in the app's config directory:
 
-**Windows:** `%APPDATA%\com.notification-to-speech.app\config.json`
-**macOS:** `~/Library/Application Support/com.notification-to-speech.app/config.json`
-**Linux:** `~/.config/com.notification-to-speech.app/config.json`
+**Windows:** `%APPDATA%\io.pingvoice.app\config.json`
+**macOS:** `~/Library/Application Support/io.pingvoice.app\config.json`
+**Linux:** `~/.config/io.pingvoice.app/config.json`
 
 ```json
 {
-  "url": "https://your-app-url.com",
+  "url": "https://pingvoice.io",
   "autostart": true,
   "start_minimized": true
 }
@@ -28,7 +30,7 @@ Create a `config.json` in the app's config directory:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `url` | `http://localhost` | The web URL to load |
+| `url` | `https://pingvoice.io` | The web URL to load |
 | `autostart` | `false` | Start app on system boot |
 | `start_minimized` | `false` | Start hidden in system tray |
 
