@@ -4,5 +4,5 @@
 )]
 
 fn main() {
-    notification_to_speech::run();
+    pingvoice::run();
 }
