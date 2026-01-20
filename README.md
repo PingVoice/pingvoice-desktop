@@ -16,9 +16,9 @@ PingVoice lets your systems speak. Send a POST request to the API, and hear it a
 
 Create a `config.json` in the app's config directory:
 
-**Windows:** `%APPDATA%\io.pingvoice.app\config.json`
-**macOS:** `~/Library/Application Support/io.pingvoice.app\config.json`
-**Linux:** `~/.config/io.pingvoice.app/config.json`
+**Windows:** `%APPDATA%\io.pingvoice\config.json`
+**macOS:** `~/Library/Application Support/io.pingvoice/config.json`
+**Linux:** `~/.config/io.pingvoice/config.json`
 
 ```json
 {
