@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2.0.0",
   "productName": "pingvoice",
-  "identifier": "io.pingvoice.app",
+  "identifier": "io.pingvoice",
   "version": "1.0.0",
   "build": {
     "beforeBuildCommand": "",

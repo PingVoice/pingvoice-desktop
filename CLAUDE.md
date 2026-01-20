@@ -27,9 +27,9 @@ This is a Tauri 2.0 desktop application that wraps a configurable web URL with n
 
 - **`src/lib.rs`** - Application initialization, window setup, autostart configuration, and close-to-tray behavior. Supports `--minimized` flag for autostart scenarios.
 - **`src/config.rs`** - JSON configuration management with platform-specific paths. Config stored at:
-  - Windows: `%APPDATA%\io.pingvoice.app\config.json`
-  - macOS: `~/Library/Application Support/io.pingvoice.app/config.json`
-  - Linux: `~/.config/io.pingvoice.app/config.json`
+  - Windows: `%APPDATA%\io.pingvoice\config.json`
+  - macOS: `~/Library/Application Support/io.pingvoice/config.json`
+  - Linux: `~/.config/io.pingvoice/config.json`
 - **`src/tray.rs`** - System tray menu (Show/Hide/Quit) with left-click toggle and right-click menu.
 - **`capabilities/default.json`** - Tauri permission declarations for window management and autostart plugin.
 
