@@ -2,6 +2,68 @@
 
 This guide covers how to build and test PingVoice Desktop on macOS before App Store submission.
 
+## Prerequisites
+
+### Xcode Command Line Tools
+
+Required for compilers and macOS SDK:
+
+```bash
+xcode-select --install
+```
+
+### Rust and Cargo
+
+Install Rust via rustup:
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+After installation, restart your terminal or run:
+
+```bash
+source ~/.cargo/env
+```
+
+Verify installation:
+
+```bash
+rustc --version
+cargo --version
+```
+
+#### Adding build targets (optional)
+
+To build for both Intel and Apple Silicon:
+
+```bash
+rustup target add x86_64-apple-darwin    # Intel
+rustup target add aarch64-apple-darwin   # Apple Silicon
+```
+
+### Tauri CLI
+
+Install the Tauri command line tool:
+
+```bash
+cargo install tauri-cli
+```
+
+Verify installation:
+
+```bash
+cargo tauri --version
+```
+
+### Summary
+
+| Dependency | Install Command |
+|------------|-----------------|
+| Xcode CLI Tools | `xcode-select --install` |
+| Rust/Cargo | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
+| Tauri CLI | `cargo install tauri-cli` |
+
 ## Building the App
 
 ### Development build (with hot-reload)
