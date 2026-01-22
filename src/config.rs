@@ -13,7 +13,7 @@ pub struct AppConfig {
 }
 
 fn default_url() -> String {
-    "https://pingvoice.io".to_string()
+    "https://pingvoice.io/dashboard".to_string()
 }
 
 fn default_true() -> bool {
