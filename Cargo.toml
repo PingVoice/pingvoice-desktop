@@ -1,6 +1,6 @@
 [package]
 name = "pingvoice"
-version = "1.0.1"
+version = "1.0.2"
 description = "PingVoice Desktop App"
 edition = "2021"
 
