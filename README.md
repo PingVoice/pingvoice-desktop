@@ -4,6 +4,28 @@ The official desktop app for [PingVoice](https://pingvoice.io) — turn API call
 
 PingVoice lets your systems speak. Send a POST request to the API, and hear it announced in real-time. Built for developers who want audio alerts for CI/CD pipelines, AI agents, server monitoring, and long-running jobs.
 
+## What is PingVoice?
+
+PingVoice is a text-to-speech API notification service. Send a POST request to the API, and the message is converted to speech and delivered instantly via WebSocket to your browser or this desktop app.
+
+**Why audio?** Sound reaches you when your eyes are elsewhere. No more watching terminals or refreshing dashboards.
+
+### Use Cases
+
+- **CI/CD Pipelines** — Know when builds and deploys finish
+- **AI Coding Assistants** — Get notified when Claude Code, Cursor, or Copilot need input
+- **Long-Running Jobs** — Step away while scripts, ETL jobs, or data processing runs
+- **Server Monitoring** — Hear critical alerts without dashboard fatigue
+
+### Platform Availability
+
+| Platform | Status |
+|----------|--------|
+| Windows | Available |
+| macOS | Coming soon |
+
+Learn more at [pingvoice.io](https://pingvoice.io)
+
 ## Features
 
 - System tray with show/hide/quit controls
