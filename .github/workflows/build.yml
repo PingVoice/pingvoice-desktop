@@ -6,6 +6,12 @@ on:
     tags: ['v*']
   pull_request:
     branches: [master, main]
+  workflow_dispatch:
+    inputs:
+      test_build:
+        description: 'Run full build (for testing)'
+        type: boolean
+        default: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -33,7 +39,7 @@ jobs:
       - run: cargo check --target ${{ matrix.target }}
 
   build:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
         include:
@@ -53,12 +59,18 @@ jobs:
         id: version
         shell: bash
         run: |
-          TAG="${GITHUB_REF#refs/tags/}"
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
-            echo "::error::Invalid tag format: $TAG"
-            exit 1
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            # Use test version for manual dispatch
+            VERSION="0.0.0-test"
+            TAG="v$VERSION"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+            if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+              echo "::error::Invalid tag format: $TAG"
+              exit 1
+            fi
+            VERSION="${TAG#v}"
           fi
-          VERSION="${TAG#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
 
@@ -78,6 +90,40 @@ jobs:
             sed -i "s/^version = \".*\"/version = \"$VERSION\"/" Cargo.toml
           fi
 
+      - name: Import Apple certificates
+        if: runner.os == 'macOS'
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE_APPLICATION }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN_NAME="build-${{ github.run_id }}.keychain"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 32)"
+
+          echo "$APPLE_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+
+          security import /tmp/certificate.p12 -k "$KEYCHAIN_NAME" \
+            -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+
+          security list-keychains -d user -s "$KEYCHAIN_NAME" $(security list-keychains -d user | tr -d '"')
+          security set-key-partition-list -S apple-tool:,apple:,codesign: \
+            -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_NAME"
+
+          rm -f /tmp/certificate.p12
+          echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
+
+          echo "Verifying certificate..."
+          security find-identity -v -p codesigning "$KEYCHAIN_NAME"
+
+      - name: Configure signing identity
+        if: runner.os == 'macOS'
+        run: |
+          jq '.bundle.macOS.signingIdentity = "Developer ID Application"' \
+            tauri.conf.json > tmp.json && mv tmp.json tauri.conf.json
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
@@ -93,6 +139,26 @@ jobs:
       - name: Build installer
         run: cargo tauri build --target ${{ matrix.target }}
 
+      - name: Notarize macOS app
+        if: runner.os == 'macOS'
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          DMG_PATH=$(find target/${{ matrix.target }}/release/bundle/dmg -name "*.dmg" | head -1)
+
+          echo "Submitting $DMG_PATH for notarization..."
+          xcrun notarytool submit "$DMG_PATH" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait --timeout 30m
+
+          echo "Stapling notarization ticket..."
+          xcrun stapler staple "$DMG_PATH"
+          xcrun stapler validate "$DMG_PATH"
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -100,6 +166,13 @@ jobs:
           path: ${{ matrix.artifact_path }}
           retention-days: 30
           if-no-files-found: error
+
+      - name: Cleanup keychain
+        if: runner.os == 'macOS' && always()
+        run: |
+          if [ -n "$KEYCHAIN_NAME" ]; then
+            security delete-keychain "$KEYCHAIN_NAME" || true
+          fi
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')

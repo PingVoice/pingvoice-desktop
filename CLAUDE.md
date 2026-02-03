@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Product Context
+
+PingVoice is a text-to-speech API notification service (https://pingvoice.io). Users POST text to the API, which converts it to speech and delivers audio in real-time via WebSocket.
+
+**This desktop app** allows users to receive spoken notifications in the background without keeping a browser tab open. It wraps the PingVoice web dashboard with native OS integration.
+
+**Target users:** DevOps engineers (CI/CD alerts), AI coding assistant users (Claude Code, Cursor), data engineers (long-running jobs), SREs (monitoring alerts).
+
+**Key tech:** Real-time WebSocket delivery, text-to-speech conversion, credit-based pricing (1 credit = 1 character).
+
 ## Build Commands
 
 ```bash
