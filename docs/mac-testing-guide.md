@@ -4,6 +4,10 @@ This guide covers how to build and test PingVoice Desktop on macOS before App St
 
 ## Prerequisites
 
+### macOS Version
+
+**Requires macOS 14.0 (Sonoma) or later.** This is needed for the `backgroundThrottling` WebKit feature that keeps audio playing when the app is hidden to the system tray.
+
 ### Xcode Command Line Tools
 
 Required for compilers and macOS SDK:
@@ -58,8 +62,9 @@ cargo tauri --version
 
 ### Summary
 
-| Dependency | Install Command |
-|------------|-----------------|
+| Requirement | Details |
+|-------------|---------|
+| macOS Version | 14.0 (Sonoma) or later |
 | Xcode CLI Tools | `xcode-select --install` |
 | Rust/Cargo | `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \| sh` |
 | Tauri CLI | `cargo install tauri-cli` |

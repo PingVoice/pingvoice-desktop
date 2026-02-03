@@ -80,7 +80,7 @@ Change the signing identity from ad-hoc to your Developer ID:
 
 ```json
 "macOS": {
-  "minimumSystemVersion": "10.15",
+  "minimumSystemVersion": "14.0",
   "entitlements": "entitlements.plist",
   "signingIdentity": "Developer ID Application: Your Name (TEAM_ID)",
   "hardenedRuntime": true
